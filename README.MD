@@ -27,7 +27,7 @@
     ;必须，aws授权密钥
     LOG_COLLECTION_AWS_SECRET=xxxxxxxxxxxxxxxxxx
 
-    *密钥需要能访问Kinesis Stream*
+    注意：密钥需要能访问Kinesis Stream
 
    **日志配置**
     
@@ -41,3 +41,5 @@
     LOG_COLLECTION_PROJECT_NAME=oms
     
   完成!
+
+
