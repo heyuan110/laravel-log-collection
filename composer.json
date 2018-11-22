@@ -1,0 +1,25 @@
+{
+    "name": "patpat/laravel-log-collection",
+    "description": "collect laravel log with centralized management,require aws kinesis stream services",
+    "keywords": [
+        "laravel-log"
+    ],
+    "homepage": "https://www.patpat.com",
+    "type": "package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bruce",
+            "email": "bruce.he@patpat.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "aws/aws-sdk-php-laravel": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PatPat\\Monolog\\": "src/"
+        }
+    }
+}
