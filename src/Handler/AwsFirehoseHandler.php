@@ -59,27 +59,37 @@ class AwsFirehoseHandler extends AbstractProcessingHandler
     }
 
     /**
+     * 配置KinesisClient
+     *
+     * @return KinesisClient
+     */
+    protected function kinesisClient()
+    {
+        $client = new KinesisClient(
+            [
+                'region' => env('LOG_COLLECTION_AWS_REGION','us-west-2'),
+                'version' => 'latest',
+                'scheme' => 'https',
+                'credentials' => [
+                    'key' => env('LOG_COLLECTION_AWS_KEY','no_key'),
+                    'secret' => env('LOG_COLLECTION_AWS_SECRET','no_secret'),
+                ],
+            ]
+        );
+        return $client;
+    }
+
+    /**
      * 单条上传
      */
     protected function putRecord($record)
     {
-        $client = new KinesisClient(
-            [
-                'region' => env('LOG_COLLECTION_AWS_REGION'),
-                'version' => 'latest',
-                'scheme' => 'https',
-                'credentials' => [
-                    'key' => env('LOG_COLLECTION_AWS_KEY'),
-                    'secret' => env('LOG_COLLECTION_AWS_SECRET'),
-                ],
-            ]
-        );
         $data = [
             "Data" => json_encode($record),
             "PartitionKey" => "patpat-partition-key-" . rand(1, 999),
-            "StreamName" => env('LOG_COLLECTION_KINESIS_STREAM','')
+            "StreamName" => env('LOG_COLLECTION_KINESIS_STREAM','no_stream')
         ];
-        $client->putRecord($data);
+        $this->kinesisClient()->putRecord($data);
     }
 
     /**
@@ -87,22 +97,11 @@ class AwsFirehoseHandler extends AbstractProcessingHandler
      */
     protected function putRecords($records)
     {
-        $client = new KinesisClient(
-            [
-                'region' => env('LOG_COLLECTION_AWS_REGION'),
-                'version' => 'latest',
-                'scheme' => 'https',
-                'credentials' => [
-                    'key' => env('LOG_COLLECTION_AWS_KEY'),
-                    'secret' => env('LOG_COLLECTION_AWS_SECRET'),
-                ],
-            ]
-        );
         $data = [
             "Records" => $records,
-            "StreamName" => env('LOG_COLLECTION_KINESIS_STREAM','')
+            "StreamName" => env('LOG_COLLECTION_KINESIS_STREAM','no_stream')
         ];
-        $client->putRecords($data);
+        $this->kinesisClient()->putRecords($data);
     }
 
     /**
