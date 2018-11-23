@@ -8,15 +8,20 @@
       
 2. composer update
 
-3. 执行`php artisan vendor:publish`
-
 ## 二、配置
 
 1. config/app.php里添加: 
 
     `\PatPat\Monolog\LogServiceProvider::class,`
         
-2. .env里添加下面配置项
+2. 执行
+`php artisan vendor:publish --provider="PatPat\Monolog\LogServiceProvider"`
+或
+`php artisan vendor:publish`
+
+前面只publish当前项目，后面是发布所有，注意一定先执行步骤1添加provider
+
+3. .env里添加下面配置项
 
   **aws配置**
 
@@ -41,5 +46,7 @@
     LOG_COLLECTION_PROJECT_NAME=oms
     
   完成!
+  
+  只有APP_ENV设置为staging日志才上传到Kinesis Stream.
 
 
