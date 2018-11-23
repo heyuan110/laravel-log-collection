@@ -44,7 +44,11 @@ class CLogger
             new AwsFirehoseHandler(),
             $streamHandler,
         ];
-        $logger = new Logger($name?$name:env('APP_ENV','laravel'),$handlers,$processors);
+        $logger_name = $name?$name:env('APP_ENV','laravel');
+        if($dir != null){
+            $logger_name = $dir . '_' . $logger_name;
+        }
+        $logger = new Logger($logger_name,$handlers,$processors);
         return $logger;
     }
 }
