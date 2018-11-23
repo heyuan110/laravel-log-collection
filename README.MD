@@ -45,7 +45,7 @@
     ;非必须，日志所属项目名称，方便日志写入es后区分
     LOG_COLLECTION_PROJECT_NAME=oms
     
-  完成!
+务必先配置好上面**必须项**
   
 ## 说明
 
