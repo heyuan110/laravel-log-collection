@@ -29,10 +29,10 @@ class AwsFirehoseHandler extends AbstractProcessingHandler
         if (env('APP_ENV') == 'staging')
         {
             //封装上传日志数据
-            //记录毫秒时间
-            $record['context']['log_created_at'] = $record['datetime']->format('Y-m-d H:i:s.u');
+            //记录毫秒
+            $datetime_u = str_pad(round($record['datetime']->format('u')/1000),3,"0",STR_PAD_LEFT);
             $ks_record = [
-                "created_at"=>$record['datetime']->format('Y-m-d H:i:s'),
+                "created_at"=>$record['datetime']->format('Y-m-d H:i:s').'.'.$datetime_u,
                 "project"=>$record['project'],
                 "project_path"=>$record['project_path'],
                 "file"=>$record['extra']['file'],
