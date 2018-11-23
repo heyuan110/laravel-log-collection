@@ -47,6 +47,8 @@
     
   完成!
   
-  只有APP_ENV设置为staging（生成环境）日志才上传到Kinesis Stream.
+## 说明
+
+调用log::info或者CLogger::getLogger('test')::info都会往本地文件写入一份，如果是生产环境（APP_ENV设置为staging）才会往Kinesis Stream上传.
 
 
