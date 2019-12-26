@@ -7,6 +7,7 @@
  */
 
 namespace PatPat\Monolog\Processor;
+
 use Monolog\Logger;
 
 /**
@@ -35,7 +36,7 @@ class IntrospectionProcessor
     }
 
     /**
-     * @param  array $record
+     * @param array $record
      * @return array
      */
     public function __invoke(array $record)

@@ -8,7 +8,7 @@
 
 namespace PatPat\Monolog;
 
-use Illuminate\Log\Writer as BaseWriter;
+use Illuminate\Log\Logger as BaseWriter;
 use Monolog\Formatter\LineFormatter;
 
 class Writer extends BaseWriter
@@ -18,7 +18,7 @@ class Writer extends BaseWriter
      *
      * @return \Monolog\Formatter\LineFormatter
      */
-    protected function getDefaultFormatter()
+    public function getDefaultFormatter()
     {
         return new LineFormatter(null, 'Y-m-d H:i:s.u', true, true);
     }

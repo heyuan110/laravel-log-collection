@@ -29,4 +29,9 @@ return [
      * 日志文件最大数
      */
     'log_max_files' => '30',
+
+    /**
+     * 日志级别
+     */
+    'log_level' => 'debug'
 ];

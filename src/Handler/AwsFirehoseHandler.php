@@ -20,40 +20,39 @@ class AwsFirehoseHandler extends AbstractProcessingHandler
     /**
      * Writes the record down to the log of the implementing handler
      *
-     * @param  array $record
+     * @param array $record
      * @return void
      */
-    protected function write(array $record)
+    protected function write(array $record): void
     {
         //only staging can send datas to firehose
-        if (env('APP_ENV') == 'staging')
-        {
+        if (env('APP_ENV') == 'staging') {
             //封装上传日志数据
             //记录毫秒
-            $datetime_u = str_pad(round($record['datetime']->format('u')/1000),3,"0",STR_PAD_LEFT);
+            $datetime_u = str_pad(round($record['datetime']->format('u') / 1000), 3, "0", STR_PAD_LEFT);
             $ks_record = [
-                "created_at"=>$record['datetime']->format('Y-m-d H:i:s').'.'.$datetime_u,
-                "project"=>$record['project'],
-                "project_path"=>$record['project_path'],
-                "file"=>$record['extra']['file'],
-                "line"=>$record['extra']['line'],
-                "url"=>$record['extra']['url'],
-                "host"=>$record['extra']['host'],
-                "path"=>$record['extra']['path'],
-                "method"=>$record['extra']['method'],
-                "ip"=>$record['extra']['ip'],
-                "server_addr"=>$record['extra']['server_addr'],
-                "level"=>$record['level'],
-                "level_name"=>$record['level_name'],
-                "channel"=>$record['channel'],
-                "message"=>$record['message'],
-                "context"=>json_encode($record['context']),
+                "created_at" => $record['datetime']->format('Y-m-d H:i:s') . '.' . $datetime_u,
+                "project" => $record['project'],
+                "project_path" => $record['project_path'],
+                "file" => $record['extra']['file'],
+                "line" => $record['extra']['line'],
+                "url" => $record['extra']['url'],
+                "host" => $record['extra']['host'],
+                "path" => $record['extra']['path'],
+                "method" => $record['extra']['method'],
+                "ip" => $record['extra']['ip'],
+                "server_addr" => $record['extra']['server_addr'],
+                "level" => $record['level'],
+                "level_name" => $record['level_name'],
+                "channel" => $record['channel'],
+                "message" => $record['message'],
+                "context" => json_encode($record['context']),
             ];
             //一定要加try不然如果这里报错会死循环
-            try{
+            try {
                 $this->putRecord($ks_record);
-            }catch (KinesisException $e){
-                $this->errorMessage($e->getAwsErrorCode().' '.$e->getAwsErrorMessage().' '.$e->getMessage());
+            } catch (KinesisException $e) {
+                $this->errorMessage($e->getAwsErrorCode() . ' ' . $e->getAwsErrorMessage() . ' ' . $e->getMessage());
             }
         }
     }
@@ -67,12 +66,12 @@ class AwsFirehoseHandler extends AbstractProcessingHandler
     {
         $client = new KinesisClient(
             [
-                'region' => env('LOG_COLLECTION_AWS_REGION','us-west-2'),
+                'region' => env('LOG_COLLECTION_AWS_REGION', 'us-west-2'),
                 'version' => 'latest',
                 'scheme' => 'https',
                 'credentials' => [
-                    'key' => env('LOG_COLLECTION_AWS_KEY','no_key'),
-                    'secret' => env('LOG_COLLECTION_AWS_SECRET','no_secret'),
+                    'key' => env('LOG_COLLECTION_AWS_KEY', 'no_key'),
+                    'secret' => env('LOG_COLLECTION_AWS_SECRET', 'no_secret'),
                 ],
             ]
         );
@@ -87,7 +86,7 @@ class AwsFirehoseHandler extends AbstractProcessingHandler
         $data = [
             "Data" => json_encode($record),
             "PartitionKey" => "patpat-partition-key-" . rand(1, 999),
-            "StreamName" => env('LOG_COLLECTION_KINESIS_STREAM','no_stream')
+            "StreamName" => env('LOG_COLLECTION_KINESIS_STREAM', 'no_stream')
         ];
         $this->kinesisClient()->putRecord($data);
     }
@@ -99,7 +98,7 @@ class AwsFirehoseHandler extends AbstractProcessingHandler
     {
         $data = [
             "Records" => $records,
-            "StreamName" => env('LOG_COLLECTION_KINESIS_STREAM','no_stream')
+            "StreamName" => env('LOG_COLLECTION_KINESIS_STREAM', 'no_stream')
         ];
         $this->kinesisClient()->putRecords($data);
     }
@@ -109,9 +108,10 @@ class AwsFirehoseHandler extends AbstractProcessingHandler
      * @param $msg
      * @throws \Exception
      */
-    protected function errorMessage($msg){
-        $default_log_path = \Config::get('log-collection.log_path'); //与log配置里的log_path目录保持一致
-        $log_path = $default_log_path .'/' . 'aws_firehose_handler_error.log';
+    protected function errorMessage($msg)
+    {
+        $default_log_path = config('log-collection.log_path'); //与log配置里的log_path目录保持一致
+        $log_path = $default_log_path . '/' . 'aws_firehose_handler_error.log';
         $streamHandler = new StreamHandler($log_path);
         //用json格式，最后用kinesis agent监控aws_firehose_handler_error.log文件，方便做单行收集
         $streamHandler->setFormatter(new JsonFormatter());
