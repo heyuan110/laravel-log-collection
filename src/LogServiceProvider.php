@@ -91,7 +91,6 @@ class LogServiceProvider extends ServiceProvider
         $config = $this->app['config']['log-collection'];
         $handler = $this->{'configure' . ucfirst($this->handler()) . 'Handler'}($config, $log);
         $log->getLogger()->pushHandler($handler);
-        $awsHandler = new AwsFirehoseHandler();
         $log->getLogger()->pushHandler($this->prepareHandler(new AwsFirehoseHandler(), $config, $log));
     }
 
