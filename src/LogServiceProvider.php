@@ -65,11 +65,7 @@ class LogServiceProvider extends ServiceProvider
         $log = new Writer(
             new Logger($this->channel(), [], $processors), $this->app['events']
         );
-//        if ($this->app->hasMonologConfigurator()) {
-//            call_user_func($this->app->getMonologConfigurator(), $log->getMonolog());
-//        } else {
         $this->configureHandler($log);
-//        }
         return $log;
 
     }
